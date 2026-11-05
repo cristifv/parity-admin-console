@@ -1,0 +1,8 @@
+# Local-dev (the `dev` profile): topics created by the app, identity on, Keycloak in compose.
+parity-admin-console:
+  environment: dev
+  kafka:
+    create-topics: true
+  identity:
+    enabled: true
+    tenant-url-template: http://{tenant}.localhost:18090

@@ -1,0 +1,20 @@
+{
+  "clientId": "desktop-{tenant}",
+  "name": "Agent desktop ({tenant})",
+  "description": "The agent desktop of tenant {tenant}: public, PKCE S256, redirect URIs on the tenant's hostname in every region (SAML-PLAN finding 7). Created and deleted by parity-admin-console only.",
+  "enabled": true,
+  "publicClient": true,
+  "protocol": "openid-connect",
+  "standardFlowEnabled": true,
+  "implicitFlowEnabled": false,
+  "directAccessGrantsEnabled": false,
+  "serviceAccountsEnabled": false,
+  "frontchannelLogout": true,
+  "fullScopeAllowed": false,
+  "attributes": {
+    "pkce.code.challenge.method": "S256",
+    "parity.tenant_id": "{tenant}"
+  },
+  "defaultClientScopes": ["basic", "profile", "parity", "desktop"],
+  "optionalClientScopes": []
+}

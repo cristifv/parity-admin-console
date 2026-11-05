@@ -1,0 +1,141 @@
+# parity-admin-console (PLAN.md): admin-api and the admin console, global control plane. No secret here:
+# the database passwords, the Kafka password and the Keycloak service-account key come from files
+# (secrets/local-dev/ locally, /run/secrets in a deployment).
+spring:
+  application:
+    name: parity-admin-console
+  main:
+    banner-mode: off
+  threads:
+    virtual:
+      enabled: true
+  lifecycle:
+    timeout-per-shutdown-phase: 15s
+  datasource:
+    # The app role: insert and read on the audit log (PLAN.md), never an owner.
+    url: ${PARITY_ADMIN_CONSOLE_DB_URL:jdbc:postgresql://127.0.0.1:5432/parity_admin_console}
+    username: ${PARITY_ADMIN_CONSOLE_DB_USER:parity_admin_console_app}
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 3000
+      validation-timeout: 2000
+  flyway:
+    # Migrations run in the app only as the owner, parity-admin-console.db.flyway-user (local-dev, tests;
+    # AdminConsoleConfiguration.migrateOnlyAsOwner): unset, nothing runs. Deployments migrate apart and
+    # may set this false.
+    enabled: ${PARITY_ADMIN_CONSOLE_FLYWAY:true}
+    placeholders:
+      appRole: ${parity-admin-console.db.app-role}
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  mvc:
+    problemdetails:
+      enabled: false
+
+server:
+  port: ${PARITY_ADMIN_CONSOLE_PORT:8080}
+  shutdown: graceful
+  error:
+    whitelabel:
+      enabled: false
+    include-stacktrace: never
+    include-message: never
+  tomcat:
+    max-swallow-size: 1MB
+
+management:
+  server:
+    port: ${PARITY_ADMIN_CONSOLE_MGMT_PORT:8081}
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: health, prometheus
+      path-mapping:
+        prometheus: metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: livenessState
+          additional-path: "management:/livez"
+        readiness:
+          include: readinessState, console
+          additional-path: "management:/readyz"
+  metrics:
+    tags:
+      service: ${spring.application.name}
+      instance: ${parity-admin-console.instance}
+
+parity-admin-console:
+  environment: ${PARITY_ADMIN_CONSOLE_ENVIRONMENT:prod}
+  instance: ${HOSTNAME:console-local}
+  version: '@project.version@'
+  db:
+    password-file: ${PARITY_ADMIN_CONSOLE_DB_PASSWORD_FILE:}
+    # Set both to run Flyway in the app as the owner (local-dev, tests).
+    flyway-user: ${PARITY_ADMIN_CONSOLE_FLYWAY_USER:}
+    flyway-password-file: ${PARITY_ADMIN_CONSOLE_FLYWAY_PASSWORD_FILE:}
+    app-role: parity_admin_console_app
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:127.0.0.1:9092}
+    username: ${PARITY_ADMIN_CONSOLE_KAFKA_USER:parity-admin-console}
+    password-file: ${PARITY_ADMIN_CONSOLE_KAFKA_PASSWORD_FILE:}
+    client: {}
+    replies-topic: replies.admin-console
+    # parity-store: reads on the read topic, writes only on the admin topic (Kafka ACL: admin-console only).
+    store-read-topic: tenant.store.requests
+    store-admin-topic: tenant.store.admin.requests
+    # parity-rs places new tenants (parity-contracts 0.16.0): its zone's onboarding topic.
+    routing-onboarding-topic: ${PARITY_ROUTING_ONBOARDING_TOPIC:tenant.routing.onboarding.requests.eu1a}
+    request-timeout: 5s
+    send-timeout: 3s
+    create-topics: false
+  lifecycle:
+    healthy-file: /tmp/${spring.application.name}.healthy
+    drained-file: /tmp/${spring.application.name}.drained
+    deregistration-delay: 2s
+    drain-timeout: 30s
+  readiness:
+    poll-interval: 250ms
+  auth:
+    # One global realm (user decision 2026-10-31): one issuer for every tenant and zone.
+    issuer: ${PARITY_AUTH_ISSUER:https://id.platform.example/realms/parity}
+    # Keycloak's internal address for the keys; fetched on the first request.
+    jwks-uri: ${PARITY_AUTH_JWKS_URI:http://keycloak:8080/realms/parity/protocol/openid-connect/certs}
+    clients: [admin-console]
+    audience: admin-console
+    # No staff organization: tenant roles only (user decision D2, 2026-11-03); a token of the realm's
+    # `platform` organization, of any reserved id below, or carrying platform-admin is refused.
+    browser-issuer: ${PARITY_AUTH_BROWSER_ISSUER:${parity-admin-console.auth.issuer}}
+    browser-client-id: admin-console
+  identity:
+    enabled: ${PARITY_ADMIN_CONSOLE_IDENTITY:false}
+    keycloak-url: ${PARITY_KEYCLOAK_URL:http://keycloak:8080}
+    realm: parity
+    client-id: parity-admin-console
+    key-file: ${PARITY_ADMIN_CONSOLE_SA_KEY_FILE:}
+    # Each desktop client's redirect URIs: the tenant's hostname in every region, so a home-zone change
+    # never touches the client (user decision 2026-10-31).
+    tenant-url-template: ${PARITY_TENANT_URL_TEMPLATE:https://{tenant}.{region}.platform.example}
+    regions: [eu1]
+    apply-interval: 2s
+    request-timeout: 10s
+    apply-batch: 10
+    backoff-min: 1s
+    backoff-max: 5m
+    check-enabled: true
+    check-cron: "0 30 3 * * *"
+  tenants:
+    # No tenant may take one; a token whose organization is one is refused (`platform` always is).
+    reserved-ids: [admin, api, app, auth, billing, console, docs, help, id, login, mail, sso, status, support, www,
+                   platform, parity, stripe, test, demo, root, system, security, abuse, desktop]
+    # parity-rs decides a new tenant's placement from this hint (2026-11-03: no console default placement).
+    residency: ${PARITY_TENANT_RESIDENCY:eu}
+    # GeoIP's zone when there is one; else the zone whose onboarding topic the console uses.
+    preferred-zone: ${PARITY_TENANT_PREFERRED_ZONE:eu1a}
+  audit:
+    partitions-ahead: 3
+    partition-interval: 12h

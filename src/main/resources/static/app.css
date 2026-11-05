@@ -1,0 +1,10 @@
+:root { --fg: #1d2330; --muted: #5a6273; --bg: #ffffff; --line: #d9dde5; --accent: #2457c5; }
+@media (prefers-color-scheme: dark) { :root { --fg: #e6e9ef; --muted: #a4abb9; --bg: #12151c; --line: #2b313d; --accent: #7aa2ff; } }
+body { margin: 0; font: 14px/1.5 system-ui, sans-serif; color: var(--fg); background: var(--bg); }
+header { display: flex; gap: 16px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+nav a { margin-right: 12px; color: var(--accent); text-decoration: none; }
+#who { margin-left: auto; color: var(--muted); }
+main { padding: 16px; overflow-x: auto; }
+table { border-collapse: collapse; min-width: 480px; }
+th, td { text-align: left; padding: 4px 10px; border-bottom: 1px solid var(--line); }
+.error { color: #c0392b; }

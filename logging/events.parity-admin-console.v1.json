@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "service": "parity-admin-console",
+  "description": "parity-admin-console's log events (log-record.v1), 2026-11-03 (task parity-rs-cc-tools S4); owned here.",
+  "events": {
+    "audit.partitions_created": {
+      "description": "admin-console: audit partitions created (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "audit.partitions_failed": {
+      "description": "admin-console: audit partitions failed (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "audit.write_failed": {
+      "description": "admin-console: audit write failed (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "backend.replies_assigned": {
+      "description": "admin-console: backend replies assigned (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "backend.replies_failed": {
+      "description": "admin-console: backend replies failed (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "backend.request_failed": {
+      "description": "admin-console: backend request failed (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "backend.request_invalid": {
+      "description": "admin-console: backend request invalid (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "db.migrations_skipped": {
+      "description": "admin-console: db migrations skipped (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "db.rls_detected": {
+      "description": "admin-console: db rls detected (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "http.request_failed": {
+      "description": "admin-console: http request failed (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "identity.account_disabled": {
+      "description": "admin-console: identity account disabled (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "identity.applied": {
+      "description": "admin-console: identity applied (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "identity.apply_failed": {
+      "description": "admin-console: identity apply failed (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "identity.check_done": {
+      "description": "admin-console: identity check done (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "identity.check_failed": {
+      "description": "admin-console: identity check failed (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "identity.repaired": {
+      "description": "admin-console: identity repaired (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "kafka.topic_created": {
+      "description": "admin-console: kafka topic created (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "keycloak.call_failed": {
+      "description": "admin-console: keycloak call failed (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "lifecycle.drain_failed": {
+      "description": "admin-console: lifecycle drain failed (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "lifecycle.drain_timed_out": {
+      "description": "admin-console: lifecycle drain timed out (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "lifecycle.drained": {
+      "description": "admin-console: lifecycle drained (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "lifecycle.file_failed": {
+      "description": "admin-console: lifecycle file failed (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "lifecycle.stale_file_removed": {
+      "description": "admin-console: lifecycle stale file removed (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "readiness.failed": {
+      "description": "admin-console: readiness failed (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "readiness.passed": {
+      "description": "admin-console: readiness passed (the call site's message says when).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    },
+    "library.logged": {
+      "description": "A third-party library's record (component: its logger; attrs.library_message: its text, shortened).",
+      "levels": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
+    }
+  }
+}
